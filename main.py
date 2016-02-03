@@ -127,5 +127,6 @@ def drawnode(draw,clust,x,y,scaling,img):
          drawnode(draw,clust.left,x+ll,top+h1/2,scaling,img)
          drawnode(draw,clust.right,x+ll,bottom-h2/2,scaling,img)
 
+print " Ahora con version control"
 
 drawdendrogram(tree,outfile='MotionTree.tiff')
