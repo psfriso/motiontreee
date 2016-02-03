@@ -84,7 +84,7 @@ def getdepth(node):
     else: # max of each child plus own distance
         return max(getdepth(node.left),getdepth(node.right))+node.distance
 
-def drawdendrogram(clust,outfile='clusters.pdf'):
+def drawdendrogram(clust,outfile='clusters.tiff'):
     # height and width
     h=getheight(clust)*5
     w=1200

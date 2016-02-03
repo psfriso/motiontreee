@@ -136,15 +136,16 @@ def dissimilarity(clust1,clust2,sd):
 
 def hcluster(n,labels,sd,avg,distance=dissimilarity):
     #cluster the rows of the "features" matrix
-    distances={}
+    #distances={}
     currentclustid=-1
 
     # clusters are initially just the individual rows
     clust=[]
     for i in range(n):
         clust += [cluster_node( isEff=False, name = labels[i],size = 1 , id=i)]
-
+    c = 1
     while len(clust)>1:
+         print "ITERATION ",c, " of ",n-1
         # Find a pair of nodes close in space
          for i in range(len(clust)):
              for j in range(i+1,len(clust)):
@@ -152,7 +153,13 @@ def hcluster(n,labels,sd,avg,distance=dissimilarity):
                      lowestpair=(i,j)
                      break
              else:
-                 continue # executed if the loop ended normally (no break)
+                # continue # executed if the loop ended normally (no break)
+                 for i in range(len(clust)):
+                     for j in range(i+1,len(clust)):
+#                         if neighbours(clust[i],clust[j],avg):
+                         lowestpair=(i,j)
+                         print "WARNING: possible disconnected motion. Distance ", \
+                               distance(clust[lowestpair[0]],clust[lowestpair[1]],sd)
              break # executed if 'continue' was skipped (break)
 
     #     print lowestpair, neighbours(clust[lowestpair[0]],clust[lowestpair[1]],avg)
@@ -179,6 +186,7 @@ def hcluster(n,labels,sd,avg,distance=dissimilarity):
          # First condition: Cluster of 25 residues or more
          minEffNodeSize = 25
          minBranchSize = 5
+         effNodeDist = 3.5
          if newcluster.size > minEffNodeSize:
              # check if both branches are larger than 5 residues
              lSize = newcluster.left.size
@@ -187,7 +195,7 @@ def hcluster(n,labels,sd,avg,distance=dissimilarity):
              if lSize > minBranchSize and rSize > minBranchSize:
                  # check distance
                  print newcluster.distance
-                 if newcluster.distance > 3.0 :
+                 if newcluster.distance > effNodeDist :
                      print "we found and effective node "
                      newcluster.isEff = True
 
@@ -197,6 +205,7 @@ def hcluster(n,labels,sd,avg,distance=dissimilarity):
          del clust[lowestpair[0]]
          clust.append(newcluster)
          print "Cluster size", newcluster.size
+         c += 1
 
          if len(clust)==1:
              subClust = extract_clusters(clust[0],4.0)
