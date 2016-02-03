@@ -27,6 +27,16 @@ def extract_clusters(clust,dist):
              cr = extract_clusters(clust.right,dist=dist)
          return cl+cr
 
+def sub_clusters(clusters,size):
+     # extract list of sub-tree clusters from hcluster tree with distance < dist
+     cl = {}
+     if clusters.size > size:
+         cl[str(clusters.id)] = clusters
+         if clusters.left.size > size:
+             cl.update(sub_clusters(clusters.left,size))
+         if clusters.right.size > size:
+             cl.update(sub_clusters(clusters.right,size))
+     return cl
 
 def get_cluster_elements(clust):
  # return ids for elements in a cluster sub-tree
@@ -221,6 +231,17 @@ def hcluster(n,labels,sd,avg,distance=dissimilarity):
              print "Max Depth ", maxDepth
              maxDepthEffNode = get_TD( clust[0] )
              print "Max TD ", maxDepthEffNode
+
+         if len(clust)==1:
+             # Tree depth
+             algo = sub_clusters(clust[0],30)
+             print type(algo)
+             for key in algo:
+                 print key, algo[key].id,algo[key].size
+             for key in algo:
+                 listaElem = get_cluster_resdiues(algo[key])
+                 listaRes = [ labels[x] for x in listaElem ]
+                 print  " ".join(listaRes)
 
 
 
