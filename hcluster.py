@@ -46,9 +46,21 @@ def error_nodes(clusters):
          cl[str(clusters.id)] = clusters
          if clusters.left.error :
              cl.update(error_nodes(clusters.left))
-         if clusters.right.size > size:
+         if clusters.right.error:
              cl.update(error_nodes(clusters.right))
      return cl
+
+def eff_nodes(clusters):
+     # extract list of sub-tree clusters from hcluster tree with distance < dist
+     cl = {}
+     if clusters.isEff:
+         cl[str(clusters.id)] = clusters
+         if clusters.left.isEff :
+             cl.update(eff_nodes(clusters.left))
+         if clusters.right.isEff:
+             cl.update(eff_nodes(clusters.right))
+     return cl
+
 
 def get_cluster_elements(clust):
  # return ids for elements in a cluster sub-tree
@@ -79,6 +91,22 @@ def get_cluster_resdiues(clust):
          if clust.right!=None:
              cr = get_cluster_elements(clust.right)
          return cl+cr
+
+def get_elems_ResID(clust):
+ # return ids for elements in a cluster sub-tree
+     if clust.name!="ADDED":
+         # positive id means that this is a leaf
+         return [clust.name]
+     else:
+         # check the right and left branches
+         cl = []
+         cr = []
+         if clust.left!=None:
+             cl = get_elems_ResID(clust.left)
+         if clust.right!=None:
+             cr = get_elems_ResID(clust.right)
+         return cl+cr
+
 
 def get_maxDepth(clust):
  # return ids for elements in a cluster sub-tree
@@ -114,6 +142,25 @@ def get_TD(clust):
          if not clust.left.isEff and clust.right.isEff:
              return get_TD(clust.right)+1
 
+def count_eff_nodes(clust):
+ # return ids for elements in a cluster sub-tree
+     if clust.isEff:
+         return count_eff_nodes(clust.left)+count_eff_nodes(clust.right )+1
+
+     if clust.left == None and clust.right == None:
+         # this is a leaf
+         return 0
+
+     else:
+         # check the right and left branches
+         if clust.left.isEff and clust.right.isEff:
+             return count_eff_nodes(clust.left)+count_eff_nodes(clust.right)+1
+         if not clust.left.isEff and not clust.right.isEff:
+             return count_eff_nodes(clust.left)+count_eff_nodes(clust.right)
+         if clust.left.isEff and not clust.right.isEff:
+             return count_eff_nodes(clust.left)+1
+         if not clust.left.isEff and clust.right.isEff:
+             return count_eff_nodes(clust.right)+1
 
 
 def L2dist(p1,p2,data):
@@ -200,7 +247,6 @@ def hcluster(n,labels,sd,avg,distance=dissimilarity):
          errorWarn = False
          if not neighbours(clust[lowestpair[0]],clust[lowestpair[1]],avg):
              errorWarn = True
-             print " ERROR WARN!!"
          newcluster=cluster_node(left=clust[lowestpair[0]],
                               right=clust[lowestpair[1]],
                               distance=closest,id=currentclustid,
@@ -218,12 +264,12 @@ def hcluster(n,labels,sd,avg,distance=dissimilarity):
              # check if both branches are larger than 5 residues
              lSize = newcluster.left.size
              rSize = newcluster.right.size
-             print "left ", lSize, " right ",rSize
+    #         print "left ", lSize, " right ",rSize
              if lSize > minBranchSize and rSize > minBranchSize:
                  # check distance
-                 print newcluster.distance
+    #             print newcluster.distance
                  if newcluster.distance > effNodeDist :
-                     print "we found and effective node "
+    #                 print "we found and effective node "
                      newcluster.isEff = True
 
          # cluster ids that weren't in the original set are negative
@@ -231,44 +277,36 @@ def hcluster(n,labels,sd,avg,distance=dissimilarity):
          del clust[lowestpair[1]]
          del clust[lowestpair[0]]
          clust.append(newcluster)
-         print "Cluster size", newcluster.size
+    #     print "Cluster size", newcluster.size
          c += 1
 
-         if len(clust)==1:
-             subClust = extract_clusters(clust[0],4.0)
-             for elem in subClust:
-                 listaElem = get_cluster_resdiues(elem)
-                 listaRes = [ labels[x] for x in listaElem ]
-                # print  " ".join( map(str,listaElem))
-                 print  " ".join(listaRes)
+    #     if len(clust)==1:
+    #         subClust = extract_clusters(clust[0],4.0)
+    #         for elem in subClust:
+    #             listaElem = get_cluster_resdiues(elem)
+    #             listaRes = [ labels[x] for x in listaElem ]
+    #            # print  " ".join( map(str,listaElem))
+    #            # print  " ".join(listaRes)
 
-         if len(clust)==1:
-             # Tree depth
-             maxDepth = get_maxDepth( clust[0] )
-             print "Max Depth ", maxDepth
-             maxDepthEffNode = get_TD( clust[0] )
-             print "Max TD ", maxDepthEffNode
+    #     if len(clust)==1:
+    #         # Tree depth
+    #         maxDepth = get_maxDepth( clust[0] )
+    #         print "Max Depth ", maxDepth
+    #         maxDepthEffNode = get_TD( clust[0] )
+    #         print "Max TD ", maxDepthEffNode
 
-         if len(clust)==1:
-             # Tree depth
-             algo = sub_clusters(clust[0],30)
-             print type(algo)
-             for key in algo:
-                 print key, algo[key].id,algo[key].size,algo[key].distance
-             for key in algo:
-                 listaElem = get_cluster_resdiues(algo[key])
-                 listaRes = [ labels[x] for x in listaElem ]
-                 print len(listaRes)
-                # print  " ".join(listaRes)
+        # if len(clust)==1:
+        #     # Tree depth
+        #     algo = sub_clusters(clust[0],30)
+        #     print type(algo)
+        #     for key in algo:
+        #         print key, algo[key].id,algo[key].size,algo[key].distance
+        #     for key in algo:
+        #         listaElem = get_cluster_resdiues(algo[key])
+        #         listaRes = [ labels[x] for x in listaElem ]
+        #         print len(listaRes)
+        #        # print  " ".join(listaRes)
 
-         if len(clust)==1:
-             # Tree depth
-             errorNodes= error_nodes(clust[0])
-             for key in errorNodes:
-                 listaElem = get_cluster_resdiues(algo[key])
-                 listaRes = [ labels[x] for x in listaElem ]
-                 print "error" , len(listaRes)
-                # print  " ".join(listaRes)
 
 
     return clust[0]

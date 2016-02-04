@@ -1,6 +1,6 @@
 import hcluster as hc
 
-def printErrors(clust,labels):
+def printErrors(clust):
     # get error-prone nodes
     errorNodes= hc.error_nodes(clust)
     if len(errorNodes) > 0:
@@ -9,16 +9,55 @@ def printErrors(clust,labels):
         c =1
         for key in errorNodes:
             if errorNodes[key].isEff:
-                print c , ": CRITICAL Node ",errorNodes[key].id, " distance split", errorNodes[key].distance
+                print c , ": CRITICAL Error Node ",errorNodes[key].id, " distance split", errorNodes[key].distance
             else:
-                print c , ": Node ",errorNodes[key].id, " distance split", errorNodes[key].distance
-            print "Splits:"
-            listaElem = hc.get_cluster_resdiues(errorNodes[key].left)
-            listaRes = [ labels[x] for x in listaElem ]
-            print  " ".join(listaRes)
-            print "AND "
-            listaElem = hc.get_cluster_resdiues(errorNodes[key].right)
-            listaRes = [ labels[x] for x in listaElem ]
-            print  " ".join(listaRes)
+                print c , ": Error Node ",errorNodes[key].id, " distance split", errorNodes[key].distance
+            printSplitElemByNode(hc.get_elems_ResID(errorNodes[key].left),hc.get_elems_ResID(errorNodes[key].right))
             c += 1
-        print "+++++++++++++++++++++++++++++++++++++++"
+        print "+++++++++++++++++++++++++++++++++++++++"+"\n"
+
+
+def printTreeProperties(clust):
+    print "SUMMARY"
+    print "======="
+    print "Particles in tree ", clust.size
+    print "Max Tree Depth ", hc.get_maxDepth( clust )
+    print "Number of effective nodes ", hc.count_eff_nodes( clust )
+    print "Tree Depth (eff nodes) ", hc.get_TD( clust )
+    print "+++++++++++++++++++++++++++++++++++++++"+"\n"
+
+
+def printSplitElemByNode(coll1,coll2):
+    print " SPLITS:"
+    print  " ".join(coll1)
+    print " AND: "
+    print  " ".join(coll2)
+
+
+def printEffNodes(clust):
+    # Buscar e imprimir los eff nodes
+    effNodes = hc.eff_nodes(clust)
+    if len(effNodes)==0:
+        return None
+    print "Effective Nodes"
+    print "==============="
+    c =1
+    for key in effNodes:
+        #
+        print "\n",c , ": Eff Node ",effNodes[key].id, " distance split", effNodes[key].distance
+        printSplitElemByNode(hc.get_elems_ResID(effNodes[key].left),hc.get_elems_ResID(effNodes[key].right))
+        c += 1
+    print "+++++++++++++++++++++++++++++++++++++++"+"\n"
+
+
+def printSubClusters(clust,size):
+    subClust = hc.extract_clusters(clust,size)
+    print "********************************************"
+    print "*** With cutoff distance ",size, " there are ", len(subClust)," clusters"
+    c=0
+    for elem in subClust:
+        c += 1
+        print "\nCluster ",c
+        listaElem = hc.get_elems_ResID(elem)
+        print  " ".join(listaElem)
+    print "+++++++++++++++++++++++++++++++++++++++"+"\n"

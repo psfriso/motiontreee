@@ -136,6 +136,10 @@ def drawnode(draw,clust,x,y,scaling,img):
          draw.text((x, y),clust.name,(0,0,0))
 
 
-reporting.printErrors(tree,labels)
+reporting.printErrors(tree)
+reporting.printTreeProperties(tree)
+reporting.printEffNodes(tree)
+reporting.printSubClusters(tree,4.0)
+reporting.printSubClusters(tree,3.0)
 
 drawdendrogram(tree,outfile='MotionTree.tiff')
