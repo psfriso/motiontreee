@@ -143,6 +143,6 @@ reporting.printEffNodes(tree)
 reporting.printSubClusters(tree,5.0)
 reporting.printSubClusters(tree,4.0)
 reporting.printSubClusters(tree,3.0)
-reporting.printSubClusters(tree,3.0)
+reporting.printSubClusters(tree,2.0)
 
 drawdendrogram(tree,outfile='MotionTree.tiff')
