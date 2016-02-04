@@ -2,7 +2,7 @@ from numpy import *
 import sys
 
 class cluster_node:
-    def __init__(self,name="", isEff = False ,left=None,right=None,distance=0.0,id=None,size = 0):
+    def __init__(self,name="", isEff = False ,error = False,left=None,right=None,distance=0.0,id=None,size = 0):
         self.left=left
         self.right=right
         self.name = name
@@ -10,6 +10,7 @@ class cluster_node:
         self.distance=distance
         self.size = size
         self.isEff = isEff
+        self.error = error
 
 def extract_clusters(clust,dist):
      # extract list of sub-tree clusters from hcluster tree with distance < dist
@@ -36,6 +37,17 @@ def sub_clusters(clusters,size):
              cl.update(sub_clusters(clusters.left,size))
          if clusters.right.size > size:
              cl.update(sub_clusters(clusters.right,size))
+     return cl
+
+def error_nodes(clusters):
+     # extract list of sub-tree clusters from hcluster tree with distance < dist
+     cl = {}
+     if clusters.error:
+         cl[str(clusters.id)] = clusters
+         if clusters.left.error :
+             cl.update(error_nodes(clusters.left))
+         if clusters.right.size > size:
+             cl.update(error_nodes(clusters.right))
      return cl
 
 def get_cluster_elements(clust):
@@ -185,17 +197,22 @@ def hcluster(n,labels,sd,avg,distance=dissimilarity):
 
          #sys.exit()
          # create the new cluster
+         errorWarn = False
+         if not neighbours(clust[lowestpair[0]],clust[lowestpair[1]],avg):
+             errorWarn = True
+             print " ERROR WARN!!"
          newcluster=cluster_node(left=clust[lowestpair[0]],
                               right=clust[lowestpair[1]],
                               distance=closest,id=currentclustid,
                               isEff = False,
+                              error = errorWarn,
                               size = clust[lowestpair[0]].size +clust[lowestpair[1]].size,
                               name = "ADDED")
          #sys.exit()
          # Finding Effective Nodes
          # First condition: Cluster of 25 residues or more
          minEffNodeSize = 25
-         minBranchSize = 5
+         minBranchSize = 7
          effNodeDist = 3.5
          if newcluster.size > minEffNodeSize:
              # check if both branches are larger than 5 residues
@@ -237,12 +254,21 @@ def hcluster(n,labels,sd,avg,distance=dissimilarity):
              algo = sub_clusters(clust[0],30)
              print type(algo)
              for key in algo:
-                 print key, algo[key].id,algo[key].size
+                 print key, algo[key].id,algo[key].size,algo[key].distance
              for key in algo:
                  listaElem = get_cluster_resdiues(algo[key])
                  listaRes = [ labels[x] for x in listaElem ]
-                 print  " ".join(listaRes)
+                 print len(listaRes)
+                # print  " ".join(listaRes)
 
+         if len(clust)==1:
+             # Tree depth
+             errorNodes= error_nodes(clust[0])
+             for key in errorNodes:
+                 listaElem = get_cluster_resdiues(algo[key])
+                 listaRes = [ labels[x] for x in listaElem ]
+                 print "error" , len(listaRes)
+                # print  " ".join(listaRes)
 
 
     return clust[0]

@@ -1,9 +1,11 @@
 import os
 from PIL import Image,ImageDraw
+from PIL import ImageFont
 from numpy import *
 import hcluster
 import sys
 import warnings
+import printReport as reporting
 
 
 inputfile = sys.argv[1]
@@ -114,6 +116,8 @@ def drawnode(draw,clust,x,y,scaling,img):
          ll=clust.distance*scaling*0.7
          if clust.isEff:
              draw.ellipse((x - 8 ,y - 8, x + 8, y + 8 ), fill = 'black')
+         if clust.error:
+             draw.ellipse((x - 12 ,y - 12, x + 12, y + 12 ), fill = 'red')
          # Vertical line from this cluster to children
          draw.line((x,top+h1/2,x,bottom-h2/2),fill=(0,0,0))
 
@@ -126,7 +130,12 @@ def drawnode(draw,clust,x,y,scaling,img):
          # Call the function to draw the left and right nodes
          drawnode(draw,clust.left,x+ll,top+h1/2,scaling,img)
          drawnode(draw,clust.right,x+ll,bottom-h2/2,scaling,img)
+     else:
+        # font = ImageFont.truetype("sans-serif.ttf", 16)
+         font = ImageFont.truetype("arctik.1.ttf", 10)
+         draw.text((x, y),clust.name,(0,0,0))
 
-print " Ahora con version control"
+
+reporting.printErrors(tree,labels)
 
 drawdendrogram(tree,outfile='MotionTree.tiff')
