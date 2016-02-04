@@ -17,7 +17,7 @@ nada,natoms = l.rstrip().split()
 
 natoms =  int(natoms)
 
-print "Numero de particulas ",natoms
+
 
 SDdata  =  zeros(shape=(natoms,natoms))
 DistAvg =  zeros(shape=(natoms,natoms))
@@ -135,11 +135,14 @@ def drawnode(draw,clust,x,y,scaling,img):
          font = ImageFont.truetype("arctik.1.ttf", 10)
          draw.text((x, y),clust.name,(0,0,0))
 
-
+print "Numero de particulas ",natoms
 reporting.printErrors(tree)
 reporting.printTreeProperties(tree)
+reporting.printMotionType(tree)
 reporting.printEffNodes(tree)
+reporting.printSubClusters(tree,5.0)
 reporting.printSubClusters(tree,4.0)
+reporting.printSubClusters(tree,3.0)
 reporting.printSubClusters(tree,3.0)
 
 drawdendrogram(tree,outfile='MotionTree.tiff')

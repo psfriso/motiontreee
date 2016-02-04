@@ -1,4 +1,4 @@
-import hcluster as hc
+import analyzingTree as hc
 
 def printErrors(clust):
     # get error-prone nodes
@@ -60,4 +60,20 @@ def printSubClusters(clust,size):
         print "\nCluster ",c
         listaElem = hc.get_elems_ResID(elem)
         print  " ".join(listaElem)
+    print "+++++++++++++++++++++++++++++++++++++++"+"\n"
+
+def printMotionType(clust):
+    # based on effective nodes
+    print "Motion At Effective Nodes Classification"
+    print "========================================"
+    listaNodos = hc.typeOfMotionAtEffNode(clust)
+    c=1
+    if listaNodos is None:
+        print " No Nodes: Oscillation motion"
+        print "+++++++++++++++++++++++++++++++++++++++"+"\n"
+        return
+
+    for key in listaNodos:
+        print c,": NODE ",key, " is " ,hc.analyzeMotionType( listaNodos[key] ), "motion"
+        c = c+1
     print "+++++++++++++++++++++++++++++++++++++++"+"\n"
