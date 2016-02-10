@@ -64,7 +64,7 @@ def hcluster(n,labels,sd,avg,distance=dissimilarity):
         clust += [cluster_node( isEff=False, name = labels[i],size = 1 , id=i)]
     c = 1
     while len(clust)>1:
-         print "ITERATION ",c, " of ",n-1
+    #     print "ITERATION ",c, " of ",n-1
     #     sys.stdout.write(str(c)+' ')
         # Find a pair of nodes close in space
          for i in range(len(clust)):

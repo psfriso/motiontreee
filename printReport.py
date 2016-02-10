@@ -37,6 +37,7 @@ def printSplitElemByNode(coll1,coll2):
 def printEffNodes(clust):
     # Buscar e imprimir los eff nodes
     effNodes = hc.eff_nodes(clust)
+#    print effNodes
     if len(effNodes)==0:
         return None
     print "Effective Nodes"

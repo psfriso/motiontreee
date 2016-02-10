@@ -7,8 +7,8 @@ import sys
 import warnings
 import printReport as reporting
 
-
-inputfile = sys.argv[1]
+jobName = sys.argv[1]
+inputfile = sys.argv[2]
 
 f = open(inputfile)
 
@@ -132,8 +132,9 @@ def drawnode(draw,clust,x,y,scaling,img):
          drawnode(draw,clust.right,x+ll,bottom-h2/2,scaling,img)
      else:
         # font = ImageFont.truetype("sans-serif.ttf", 16)
-         font = ImageFont.truetype("arctik.1.ttf", 10)
-         draw.text((x, y),clust.name,(0,0,0))
+        # font = ImageFont.truetype("arctik.1.ttf", 10)
+        # draw.text((x, y),clust.name,(0,0,0))
+        pass
 
 print "Numero de particulas ",natoms
 reporting.printErrors(tree)
@@ -145,4 +146,4 @@ reporting.printSubClusters(tree,4.0)
 reporting.printSubClusters(tree,3.0)
 reporting.printSubClusters(tree,2.0)
 
-drawdendrogram(tree,outfile='MotionTree.tiff')
+drawdendrogram(tree,outfile='MotionTree_'+jobName+'.tiff')

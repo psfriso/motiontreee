@@ -37,14 +37,12 @@ def error_nodes(clusters):
      return cl
 
 def eff_nodes(clusters):
-     # extract list of sub-tree clusters from hcluster tree with distance < dist
      cl = {}
-     if clusters.isEff:
-         cl[str(clusters.id)] = clusters
-         if clusters.left.isEff :
-             cl.update(eff_nodes(clusters.left))
-         if clusters.right.isEff:
-             cl.update(eff_nodes(clusters.right))
+     if clusters.isEff: cl[str(clusters.id)] = clusters
+     if clusters.left.isEff :
+         cl.update(eff_nodes(clusters.left))
+     if clusters.right.isEff:
+         cl.update(eff_nodes(clusters.right))
      return cl
 
 
@@ -54,7 +52,7 @@ def typeOfMotionAtEffNode(clust):
         return None
     movingParts = {}
     for key in nodes:
-        movingParts[str(nodes[key].id)]=[nodes[key].left.size, nodes[key].right.size]
+        movingParts[str(nodes[key].id)]=[nodes[key].left.size, nodes[key].right.size,]
     return movingParts
 
 
