@@ -6,6 +6,7 @@ import hcluster
 import sys
 import warnings
 import printReport as reporting
+from write_dendrogram  import *
 
 jobName = sys.argv[1]
 inputfile = sys.argv[2]
@@ -137,6 +138,12 @@ def drawnode(draw,clust,x,y,scaling,img):
         pass
 
 print "Numero de particulas ",natoms
+
+aux = getNewick(tree, "", tree.distance)
+print aux
+
+sys.exit("bye")
+
 reporting.printErrors(tree)
 reporting.printTreeProperties(tree)
 reporting.printMotionType(tree)
