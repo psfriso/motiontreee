@@ -1,5 +1,11 @@
 import analyzingTree as hc
 
+def printNewickfile(f_name,text):
+    f = open(f_name,'w')
+    print >> f , text
+    f.close()
+
+
 def printErrors(clust):
     # get error-prone nodes
     errorNodes= hc.error_nodes(clust)
@@ -9,9 +15,9 @@ def printErrors(clust):
         c =1
         for key in errorNodes:
             if errorNodes[key].isEff:
-                print c , ": CRITICAL Error Node ",errorNodes[key].id, " distance split", errorNodes[key].distance
+                print c , ": DISCONNECTED: CRITICAL Error Node ",errorNodes[key].id, " distance split", errorNodes[key].distance
             else:
-                print c , ": Error Node ",errorNodes[key].id, " distance split", errorNodes[key].distance
+                print c , ": DISCONNECTED: Error Node ",errorNodes[key].id, " distance split", errorNodes[key].distance
             printSplitElemByNode(hc.get_elems_ResID(errorNodes[key].left),hc.get_elems_ResID(errorNodes[key].right))
             c += 1
         print "+++++++++++++++++++++++++++++++++++++++"+"\n"
