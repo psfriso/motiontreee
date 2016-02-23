@@ -2,7 +2,7 @@ import hcluster
 import sys
 import printReport as reporting
 from write_dendrogram  import *
-from plotTree import drawdendrogram
+# from plotTree import drawdendrogram
 from io import readInput
 
 def writeOutput(natoms,tree):
@@ -24,7 +24,7 @@ def main(jobName,inputfile):
     f.close()
     tree = hcluster.hcluster(natoms,labels,SDdata,DistAvg)
     writeOutput(natoms,tree)
-    drawdendrogram(tree,outfile='MotionTree_'+jobName+'.tiff')
+#    drawdendrogram(tree,outfile='MotionTree_'+jobName+'.tiff')
 
 
 if __name__ == '__main__':
