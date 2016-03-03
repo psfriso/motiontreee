@@ -59,6 +59,7 @@ def typeOfMotionAtEffNode(clust):
 def analyzeMotionType(d):
     # d is a dictionary entry
     minDomainRes = 25
+    # Aqui habia un error
     if d[0] >= minDomainRes : uno = 'Domain '
     if d[0] < minDomainRes : uno = 'Local Chain '
     if d[1] >= minDomainRes : dos = 'Domain '
