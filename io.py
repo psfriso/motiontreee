@@ -2,6 +2,8 @@ import numpy as np
 import warnings
 
 def readInput(f):
+''' Interface with Fortran code'''
+
     l = f.readline()
     nada,natoms = l.rstrip().split()
     natoms =  int(natoms)
